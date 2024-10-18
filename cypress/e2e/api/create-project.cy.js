@@ -3,19 +3,19 @@ import { faker } from '@faker-js/faker'
 describe('Create Project', () => {
   beforeEach(() => {
     cy.api_deleteProjects()
-    cy.login()
   })
 
   it('successfully', () => {
     const project = {
       name: `project-${faker.datatype.uuid()}`,
       description: faker.random.words(5),
+      initialize_with_readme: faker.datatype.boolean(),
     }
 
-    cy.gui_createProject(project)
-
-    cy.url().should('eq', `${Cypress.config('baseUrl')}/${Cypress.env('user_name')}/${project.name}`)
-    cy.contains(project.name).should('be.visible')
-    cy.contains(project.description).should('be.visible')
+    cy.api_createProject(project).then((response) => {
+      expect(response.status).to.eq(201)
+      expect(response.body.name).to.eq(project.name)
+      expect(response.body.description).to.eq(project.description)
+    })
   })
 })
