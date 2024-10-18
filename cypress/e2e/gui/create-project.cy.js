@@ -1,18 +1,25 @@
+import { faker } from '@faker-js/faker';
+
 describe('Create Project', () => {
   beforeEach(() => {
     cy.login();
-    cy.visit('/');
   });
 
-  it('successfully', (projectName = 'project-created-automatically') => {
-    cy.get('#js-onboarding-new-project-link').should('be.visible').click();
-    cy.get('.qa-global-new-project-link').should('be.visible').click();
-    cy.url().should('eq', `${Cypress.config('baseUrl')}/projects/new`);
-    cy.get('#project_name')
-      .should('be.visible')
-      .type(`${projectName}`)
-      .should('have.value', `${projectName}`);
-    cy.contains('input', 'Create project').click();
-    cy.url().should('eq', `${Cypress.config('baseUrl')}/root/${projectName}`);
+  it('successfully', () => {
+    const project = {
+      name: `project-${faker.datatype.uuid()}`,
+      description: faker.random.words(5),
+    };
+
+    cy.gui_createProject(project);
+
+    cy.url().should(
+      'eq',
+      `${Cypress.config('baseUrl')}/${Cypress.env('user_name')}/${
+        project.name
+      }`,
+    );
+    cy.contains(project.name).should('be.visible');
+    cy.contains(project.description).should('be.visible');
   });
 });
