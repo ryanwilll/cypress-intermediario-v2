@@ -53,3 +53,23 @@ Cypress.Commands.add('gui_createIssue', (issue) => {
   cy.get('.qa-issuable-form-description').type(issue.description)
   cy.contains('Submit issue').click()
 })
+
+Cypress.Commands.add('gui_setLabelOnIssue', (label) => {
+  cy.get('.qa-edit-link-labels').click()
+  cy.contains(label.name).click()
+  cy.get('body').click()
+})
+
+Cypress.Commands.add('gui_createLabel', (data) => {
+  cy.get('.qa-label-create-new').click()
+  cy.get('.qa-label-title').type(data.label.name)
+  cy.get('.qa-label-description').type(data.label.name)
+  cy.get('.qa-label-color').clear().type(data.label.color)
+
+  cy.contains('input[type="submit"]', 'Create label').click()
+})
+
+Cypress.Commands.add('gui_setMilestoneOnIssue', (milestone) => {
+  cy.get('.block.milestone .edit-link').click()
+  cy.contains(milestone.title).click()
+})
